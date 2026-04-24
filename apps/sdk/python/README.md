@@ -96,7 +96,7 @@ The SDK is a client — it talks to the AgentGuard governance API that runs
 the actual pipeline. You host the API yourself:
 
 ```bash
-git clone https://github.com/agentguard/agentguard
+git clone https://github.com/vikramRooT/agentguard
 cd agentguard
 pnpm install
 pnpm infra:up            # Postgres + Redis via docker compose
@@ -105,7 +105,7 @@ pnpm seed                # register demo agents
 ```
 
 Then point the SDK at `http://localhost:4000`. Full deployment guide:
-[/docs/self-hosting.md](https://github.com/agentguard/agentguard/blob/main/docs/self-hosting.md).
+[/docs/self-hosting.md](https://github.com/vikramRooT/agentguard/blob/main/docs/self-hosting.md).
 
 ## API reference
 
@@ -223,17 +223,17 @@ you can iterate on the policy engine without bumping the SDK.
 
 ## Framework integrations
 
-See [`examples/`](https://github.com/agentguard/agentguard/tree/main/examples):
+See [`examples/`](https://github.com/vikramRooT/agentguard/tree/main/examples):
 
-- **[Claude Agent SDK](https://github.com/agentguard/agentguard/blob/main/examples/claude_agent_sdk_integration.py)** — expose `pay` as an MCP tool.
-- **[LangChain](https://github.com/agentguard/agentguard/blob/main/examples/langchain_integration.py)** — `StructuredTool` the agent can call.
-- **[AutoGen / direct use](https://github.com/agentguard/agentguard/blob/main/examples/quickstart.py)** — call `guard.pay()` directly.
-- **[x402 endpoints](https://github.com/agentguard/agentguard/blob/main/examples/pay_for_service.py)** — pay any x402-protected HTTP service through the pipeline.
+- **[Claude Agent SDK](https://github.com/vikramRooT/agentguard/blob/main/examples/claude_agent_sdk_integration.py)** — expose `pay` as an MCP tool.
+- **[LangChain](https://github.com/vikramRooT/agentguard/blob/main/examples/langchain_integration.py)** — `StructuredTool` the agent can call.
+- **[AutoGen / direct use](https://github.com/vikramRooT/agentguard/blob/main/examples/quickstart.py)** — call `guard.pay()` directly.
+- **[x402 endpoints](https://github.com/vikramRooT/agentguard/blob/main/examples/pay_for_service.py)** — pay any x402-protected HTTP service through the pipeline.
 
 ## Development
 
 ```bash
-git clone https://github.com/agentguard/agentguard
+git clone https://github.com/vikramRooT/agentguard
 cd agentguard/apps/sdk/python
 pip install -e ".[dev]"
 pytest
@@ -250,7 +250,7 @@ MIT © 2026 AgentGuard Protocol contributors.
 
 ## Links
 
-- Repo: <https://github.com/agentguard/agentguard>
-- Docs: <https://github.com/agentguard/agentguard#readme>
-- Issues: <https://github.com/agentguard/agentguard/issues>
+- Repo: <https://github.com/vikramRooT/agentguard>
+- Docs: <https://github.com/vikramRooT/agentguard#readme>
+- Issues: <https://github.com/vikramRooT/agentguard/issues>
 - Built for the [Agentic Economy on Arc](https://lablab.ai/event/agentic-economy-on-arc) hackathon (April 2026).

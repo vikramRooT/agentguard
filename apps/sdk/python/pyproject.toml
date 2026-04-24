@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agentguard-protocol"
-version = "0.1.0"
+version = "0.1.1"
 description = "Governance layer SDK for autonomous AI agent payments on Circle Nanopayments and Arc"
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -43,11 +43,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/agentguard/agentguard"
-Documentation = "https://github.com/agentguard/agentguard#readme"
-Repository = "https://github.com/agentguard/agentguard"
-Issues = "https://github.com/agentguard/agentguard/issues"
-Changelog = "https://github.com/agentguard/agentguard/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/vikramRooT/agentguard"
+Documentation = "https://github.com/vikramRooT/agentguard#readme"
+Repository = "https://github.com/vikramRooT/agentguard"
+Issues = "https://github.com/vikramRooT/agentguard/issues"
+Changelog = "https://github.com/vikramRooT/agentguard/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 # Enables real Circle Gateway + x402 payments via circlekit.

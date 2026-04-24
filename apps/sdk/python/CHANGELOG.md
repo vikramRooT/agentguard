@@ -5,6 +5,12 @@ All notable changes to `agentguard-protocol` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] — 2026-04-24
+
+- Repository URLs in `pyproject.toml` and the README now point at the real
+  public repo (`github.com/vikramRooT/agentguard`), so PyPI's project links
+  resolve correctly.
+
 ## [0.1.0] — 2026-04-24
 
 First public release. The SDK is the client surface for the AgentGuard
