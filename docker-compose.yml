@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: agentguard-postgres
+    environment:
+      POSTGRES_USER: agentguard
+      POSTGRES_PASSWORD: agentguard
+      POSTGRES_DB: agentguard
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./apps/api/src/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentguard"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: agentguard-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # One-command self-host — bring up with:
+  #   docker compose --profile full up -d
+  # The default `docker compose up` still starts just postgres + redis, so
+  # the existing dev workflow (local `pnpm dev:api`) is unchanged.
+  api:
+    profiles: ["full"]
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: agentguard-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://agentguard:agentguard@postgres:5432/agentguard
+      REDIS_URL: redis://redis:6379
+      PORT: "4000"
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:4000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5

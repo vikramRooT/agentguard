@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/.next
+**/.turbo
+**/coverage
+**/.pytest_cache
+**/__pycache__
+**/postgres-data
+**/redis-data
+.git
+.env
+.env.local
+.vercel
+apps/web
+apps/sdk/python/tests

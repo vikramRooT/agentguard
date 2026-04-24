@@ -1,0 +1,57 @@
+node_modules/
+.pnpm-store/
+dist/
+build/
+.next/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Editors
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Local runtime
+tmp/
+coverage/
+*.tsbuildinfo
+
+# Docker
+postgres-data/
+redis-data/
+
+# Circle Wallets recovery files + other local credentials
+secrets/
+
+# PyPI placeholder build artifacts (local-only, not part of the repo)
+.pypi-placeholder/
+
+# Claude Code runtime state
+.claude/
+
+# Vendored sponsor repos — documented as references, not bundled in our tree.
+# See vendor/README.md for upstream URLs.
+vendor/

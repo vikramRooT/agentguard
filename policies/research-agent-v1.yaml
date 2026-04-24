@@ -1,0 +1,31 @@
+agent_id: research-agent-v1
+owner_wallet: 0xAcmeCorp
+
+spending_limits:
+  per_transaction: 5
+  per_day: 50
+  per_recipient_per_day: 10
+
+recipient_policy:
+  type: allowlist
+  approved_recipients:
+    - data-vendor-agent-v1
+    - inference-agent-v1
+    - sms-agent-v1
+  fallback_action: block
+
+intent_verification:
+  enabled: true
+  sensitivity: medium
+
+approval_rules:
+  - if: transaction_amount > 2
+    then: require_human_approval
+
+kill_switch:
+  enabled: true
+  authorized_pausers:
+    - 0xOperator
+
+audit:
+  log_all_checks: true

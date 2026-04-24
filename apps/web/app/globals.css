@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: #edf0f5;
+  color: #0f172a;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 12% -5%, rgba(37, 99, 235, 0.10), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 88% -5%, rgba(124, 58, 237, 0.08), transparent 55%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(8, 145, 178, 0.05), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Very subtle graph-paper grid — barely there */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Shimmer — subtle gray-on-white */
+.shimmer-bar {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0) 0%,
+    rgba(15, 23, 42, 0.06) 50%,
+    rgba(15, 23, 42, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Live pulse dot — green, toned halo */
+.live-dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #059669;
+  box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.2);
+}
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgba(5, 150, 105, 0.4);
+  animation: pingSlow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes pingSlow {
+  75%, 100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+/* Gradient text — dark to blue to purple */
+.text-gradient {
+  background: linear-gradient(135deg, #0f172a 0%, #2563eb 55%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Soft card hover */
+.card-hover {
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.card-hover:hover {
+  transform: translateY(-1px);
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
+}
+
+/* Remove user-select on numerical counters for cleaner look */
+.select-none-all,
+.select-none-all * {
+  user-select: none;
+}

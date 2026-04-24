@@ -1,0 +1,22 @@
+{
+  "name": "agentguard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The governance layer for autonomous agent payments on Circle Nanopayments",
+  "scripts": {
+    "dev": "pnpm --parallel --stream -r run dev",
+    "dev:api": "pnpm --filter @agentguard/api dev",
+    "dev:web": "pnpm --filter @agentguard/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "seed": "pnpm --filter @agentguard/scripts exec tsx seed-wallets.ts",
+    "sim": "pnpm --filter @agentguard/scripts exec tsx agent-economy.ts",
+    "demo:attack": "pnpm --filter @agentguard/scripts exec tsx demo-attack.ts",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  }
+}

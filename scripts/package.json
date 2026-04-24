@@ -1,0 +1,28 @@
+{
+  "name": "@agentguard/scripts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed-wallets": "tsx seed-wallets.ts",
+    "agent-economy": "tsx agent-economy.ts",
+    "demo-attack": "tsx demo-attack.ts",
+    "attack:gradual-drain": "tsx attacks/gradual-drain.ts",
+    "attack:double-payment": "tsx attacks/double-payment.ts",
+    "attack:rogue-employee": "tsx attacks/rogue-employee.ts",
+    "attack:new-recipient": "tsx attacks/new-recipient.ts",
+    "attack:supply-chain": "tsx attacks/supply-chain.ts"
+  },
+  "dependencies": {
+    "@circle-fin/developer-controlled-wallets": "^8.0.0",
+    "dotenv": "^16.4.7",
+    "undici": "^6.21.0",
+    "viem": "^2.21.50",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
