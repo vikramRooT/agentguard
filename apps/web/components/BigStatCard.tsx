@@ -62,6 +62,8 @@ interface Props {
   icon: React.ElementType;
   delta?: string;
   suffix?: string;
+  /** Optional external link rendered in the bottom-right of the card. */
+  link?: { href: string; label: string };
 }
 
 export function BigStatCard({
@@ -72,6 +74,7 @@ export function BigStatCard({
   icon: Icon,
   delta,
   suffix,
+  link,
 }: Props) {
   const motionValue = useMotionValue(0);
   const spring = useSpring(motionValue, { damping: 30, stiffness: 120 });
@@ -125,6 +128,31 @@ export function BigStatCard({
             </span>
           )}
         </div>
+        {link && (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noreferrer"
+            className={clsx(
+              "mt-3 inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-wider transition",
+              cfg.icon,
+              "hover:underline",
+            )}
+          >
+            {link.label}
+            <svg
+              className="h-2.5 w-2.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7 17L17 7M7 7h10v10" />
+            </svg>
+          </a>
+        )}
       </div>
     </div>
   );

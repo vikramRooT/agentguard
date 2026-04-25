@@ -194,6 +194,14 @@ export default function DashboardPage() {
               icon={Wallet}
               suffix="USDC"
               delta={`@ $${overview?.protocol?.fee_per_check_usdc ?? 0}/check`}
+              link={
+                overview?.protocol?.treasury_address
+                  ? {
+                      href: `https://testnet.arcscan.app/address/${overview.protocol.treasury_address}`,
+                      label: "view treasury on arc",
+                    }
+                  : undefined
+              }
             />
           </section>
 

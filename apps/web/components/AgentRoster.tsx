@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Pause, Play, Users } from "lucide-react";
+import { ExternalLink, Loader2, Pause, Play, Users } from "lucide-react";
 import clsx from "clsx";
 import { Avatar } from "./Avatar";
 import { pauseAgent, unpauseAgent } from "@/lib/api";
+
+const TREASURY_ADDRESS =
+  "0x82af8a89f1121b752781e2e2df9d10e4b985a4ec";
+const ARC_EXPLORER = "https://testnet.arcscan.app";
 
 interface AgentStat {
   agent_id: string;
@@ -139,7 +143,9 @@ export function AgentRoster({ stats, paused, operatorWallet, onPausedChange }: P
                 </div>
               </div>
               {/* Hide kill switch for receiver-only / demo-only rows —
-                  pausing them is meaningless. */}
+                  pausing them is meaningless. The treasury row instead
+                  links to its on-chain address so judges can verify the
+                  governance fees on Arc Block Explorer. */}
               {meta.kind === "sender" ? (
                 <RowKillSwitch
                   agentId={id}
@@ -147,6 +153,16 @@ export function AgentRoster({ stats, paused, operatorWallet, onPausedChange }: P
                   operatorWallet={operatorWallet}
                   onChange={(p) => onPausedChange(id, p)}
                 />
+              ) : id === "agentguard-treasury" ? (
+                <a
+                  href={`${ARC_EXPLORER}/address/${TREASURY_ADDRESS}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="View treasury on Arc Block Explorer"
+                  className="flex h-7 w-7 items-center justify-center rounded-md border border-line text-muted transition hover:border-accent-purple/40 hover:bg-accent-purple/10 hover:text-accent-purple"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
               ) : (
                 <div className="h-7 w-7" aria-hidden />
               )}
