@@ -13,6 +13,7 @@ import {
   Terminal,
 } from "lucide-react";
 import { NavBar } from "@/components/NavBar";
+import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 
 const layers = [
   {
@@ -216,8 +217,31 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ================= INTEGRATION ================= */}
+      {/* ================= ARCHITECTURE ================= */}
       <section className="relative py-24">
+        <div className={`${CONTAINER} relative`}>
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent-purple">
+              Architecture
+            </div>
+            <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-primary md:text-5xl">
+              Where AgentGuard sits.
+            </h2>
+            <p className="mt-4 text-lg text-muted">
+              We're a thin layer the agent calls instead of Circle directly.
+              Operator policies and on-chain identity gate every payment
+              before any USDC moves. Same SDK on every framework.
+            </p>
+          </div>
+
+          <div className="mt-14">
+            <ArchitectureDiagram />
+          </div>
+        </div>
+      </section>
+
+      {/* ================= INTEGRATION ================= */}
+      <section className="relative border-t border-line/60 py-24">
         <div className={`${CONTAINER} relative`}>
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>

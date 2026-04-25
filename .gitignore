@@ -55,3 +55,6 @@ secrets/
 # Vendored sponsor repos — documented as references, not bundled in our tree.
 # See vendor/README.md for upstream URLs.
 vendor/
+
+# Office lock files
+~$*

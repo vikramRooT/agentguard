@@ -390,6 +390,110 @@ def slide_what_it_is(prs):
     )
 
 
+def slide_architecture(prs):
+    """Architecture: where AgentGuard sits between agents and the rail."""
+    s = prs.slides.add_slide(prs.slide_layouts[6])
+    _set_bg(s, WHITE)
+    add_label(s, "Architecture · where AgentGuard sits", left=Inches(0.7), top=Inches(0.4), color=PURPLE)
+    add_text(
+        s,
+        "A thin governance layer between agents and the rail.",
+        left=Inches(0.7),
+        top=Inches(0.85),
+        width=Inches(12),
+        height=Inches(0.7),
+        size=28,
+        color=NAVY,
+        bold=True,
+    )
+
+    # Five horizontally stacked layers
+    layers = [
+        ("Operators", "CFOs · security · platform — own the YAML policy + kill-switch keys", PURPLE),
+        ("AI agents (any runtime)", "Claude Agent SDK · LangChain · AutoGen · CrewAI — call guard.pay()", BLUE),
+        ("AgentGuard", "5-layer pipeline: kill switch · ERC-8004 · policy · anomaly · Claude intent", RED),
+        ("Circle Nanopayments", "Developer-Controlled Wallets · Gateway batching · EIP-712 signatures", CYAN),
+        ("Arc Testnet", "USDC settlement · audit receipts on-chain · public block explorer", GREEN),
+    ]
+    top = Inches(2.0)
+    row_h = Inches(0.95)
+    arrow_h = Inches(0.18)
+
+    for i, (name, desc, color) in enumerate(layers):
+        y = top + Emu(int(row_h) * i)
+        is_us = (name == "AgentGuard")
+
+        # The AgentGuard row gets a thicker border + 'YOU ARE HERE' tag
+        bg = RGBColor(0xF8, 0xFA, 0xFC) if not is_us else RGBColor(0xEF, 0xF6, 0xFF)
+        box = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.7), y, Inches(12), Inches(0.78))
+        box.adjustments[0] = 0.15
+        box.fill.solid()
+        box.fill.fore_color.rgb = bg
+        box.line.color.rgb = color
+        box.line.width = Emu(38100 if is_us else 12700)  # 3pt vs 1pt
+
+        # Color band on the left edge
+        add_band(s, color, left=Inches(0.7), top=y + Inches(0.08), width=Inches(0.12), height=Inches(0.62))
+
+        add_text(
+            s,
+            name,
+            left=Inches(1.0),
+            top=y + Inches(0.07),
+            width=Inches(4.5),
+            height=Inches(0.4),
+            size=18,
+            color=NAVY,
+            bold=True,
+        )
+        add_text(
+            s,
+            desc,
+            left=Inches(1.0),
+            top=y + Inches(0.42),
+            width=Inches(10),
+            height=Inches(0.35),
+            size=12,
+            color=SLATE_500,
+        )
+
+        if is_us:
+            badge = s.shapes.add_shape(
+                MSO_SHAPE.ROUNDED_RECTANGLE,
+                Inches(11.0),
+                y + Inches(0.18),
+                Inches(1.5),
+                Inches(0.4),
+            )
+            badge.adjustments[0] = 0.5
+            badge.fill.solid()
+            badge.fill.fore_color.rgb = RED
+            badge.line.fill.background()
+            tf = badge.text_frame
+            tf.margin_left = Emu(0)
+            p = tf.paragraphs[0]
+            p.alignment = PP_ALIGN.CENTER
+            run = p.add_run()
+            run.text = "YOU ARE HERE"
+            run.font.name = "Calibri"
+            run.font.size = Pt(10)
+            run.font.bold = True
+            run.font.color.rgb = WHITE
+
+        # Arrow between layers (except after last)
+        if i < len(layers) - 1:
+            arrow = s.shapes.add_shape(
+                MSO_SHAPE.DOWN_ARROW,
+                Inches(6.5),
+                y + Inches(0.78),
+                Inches(0.3),
+                arrow_h,
+            )
+            arrow.fill.solid()
+            arrow.fill.fore_color.rgb = SLATE_300
+            arrow.line.fill.background()
+
+
 def slide_dashboard(prs):
     s = prs.slides.add_slide(prs.slide_layouts[6])
     _set_bg(s, WHITE)
@@ -837,6 +941,7 @@ def main() -> None:
         slide_title,
         slide_problem,
         slide_what_it_is,
+        slide_architecture,
         slide_dashboard,
         slide_attack,
         slide_economics,
@@ -851,7 +956,17 @@ def main() -> None:
 
     out = Path(__file__).resolve().parent.parent / "docs" / "AgentGuard_Deck.pptx"
     out.parent.mkdir(parents=True, exist_ok=True)
-    prs.save(str(out))
+    try:
+        prs.save(str(out))
+    except PermissionError:
+        # File is open in PowerPoint — write to a temp name so the user can
+        # close PowerPoint and rename later.
+        out = out.with_name("AgentGuard_Deck.NEW.pptx")
+        prs.save(str(out))
+        print(
+            f"[warn] target was locked (PowerPoint open?) — wrote to {out.name} "
+            "instead. Close PowerPoint and rename to AgentGuard_Deck.pptx."
+        )
     size_kb = out.stat().st_size // 1024
     print(f"[ok] {out.relative_to(out.parent.parent.parent)} · {len(builders)} slides · {size_kb} KB")
 
