@@ -277,6 +277,14 @@ export default function DashboardPage() {
                         key={inc.incident_id}
                         incident={inc}
                         flash={inc.incident_id === flashIncidentId}
+                        onSelect={() => {
+                          // Find the payment row this incident corresponds
+                          // to and open the same trace modal as the feed.
+                          const match = rows.find(
+                            (r) => r.request_id === inc.request_id,
+                          );
+                          if (match) setSelectedPayment(match);
+                        }}
                       />
                     ))
                 )}

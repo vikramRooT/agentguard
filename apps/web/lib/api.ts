@@ -111,6 +111,7 @@ export interface OverviewResponse {
 
 export interface IncidentRow {
   incident_id: string;
+  request_id: string;
   agent_id: string;
   decision: Decision;
   reason: string;
