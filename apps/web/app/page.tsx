@@ -346,6 +346,160 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ================= POLICY ================= */}
+      <section className="relative border-y border-line/60 bg-white/70 py-24 backdrop-blur">
+        <div className={`${CONTAINER} relative`}>
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div className="overflow-hidden rounded-2xl border border-slate-800 bg-[#0b0e19] shadow-card-lg lg:order-1">
+              <div className="flex items-center gap-1.5 border-b border-slate-800 px-4 py-2.5">
+                <div className="h-2.5 w-2.5 rounded-full bg-accent-red/60" />
+                <div className="h-2.5 w-2.5 rounded-full bg-accent-yellow/60" />
+                <div className="h-2.5 w-2.5 rounded-full bg-accent-green/60" />
+                <span className="ml-2 font-mono text-[11px] text-slate-400">
+                  policies/research-agent-v1.yaml
+                </span>
+              </div>
+              <pre className="overflow-auto p-6 font-mono text-[13px] leading-relaxed text-slate-100">
+                <code>
+                  <span className="text-accent-cyan">agent_id</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-green">research-agent-v1</span>
+                  {"\n"}
+                  <span className="text-accent-cyan">owner_wallet</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-green">0xAcmeCorp</span>
+                  {"\n\n"}
+                  <span className="text-accent-cyan">spending_limits</span>
+                  <span className="text-slate-400">:</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">per_transaction</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-blue">5</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">per_day</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-blue">50</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">per_recipient_per_day</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-blue">10</span>
+                  {"\n\n"}
+                  <span className="text-accent-cyan">recipient_policy</span>
+                  <span className="text-slate-400">:</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">type</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-green">allowlist</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">approved_recipients</span>
+                  <span className="text-slate-400">:</span>
+                  {"\n    "}
+                  <span className="text-slate-400">-</span>{" "}
+                  <span className="text-accent-green">data-vendor-agent-v1</span>
+                  {"\n    "}
+                  <span className="text-slate-400">-</span>{" "}
+                  <span className="text-accent-green">inference-agent-v1</span>
+                  {"\n    "}
+                  <span className="text-slate-400">-</span>{" "}
+                  <span className="text-accent-green">sms-agent-v1</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">fallback_action</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-yellow">block</span>
+                  {"\n\n"}
+                  <span className="text-accent-cyan">intent_verification</span>
+                  <span className="text-slate-400">:</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">enabled</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-blue">true</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">sensitivity</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-green">high</span>
+                  {"\n\n"}
+                  <span className="text-accent-cyan">approval_rules</span>
+                  <span className="text-slate-400">:</span>
+                  {"\n  "}
+                  <span className="text-slate-400">-</span>{" "}
+                  <span className="text-accent-cyan">if</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-green">transaction_amount &gt; 2</span>
+                  {"\n    "}
+                  <span className="text-accent-cyan">then</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-yellow">require_human_approval</span>
+                  {"\n\n"}
+                  <span className="text-accent-cyan">kill_switch</span>
+                  <span className="text-slate-400">:</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">enabled</span>
+                  <span className="text-slate-400">:</span>{" "}
+                  <span className="text-accent-blue">true</span>
+                  {"\n  "}
+                  <span className="text-accent-cyan">authorized_pausers</span>
+                  <span className="text-slate-400">:</span>
+                  {"\n    "}
+                  <span className="text-slate-400">-</span>{" "}
+                  <span className="text-accent-green">0xOperator</span>
+                </code>
+              </pre>
+            </div>
+
+            <div className="lg:order-2">
+              <div className="font-mono text-[11px] uppercase tracking-[0.18em] text-accent-purple">
+                Policy as code
+              </div>
+              <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-primary md:text-5xl">
+                Operators write YAML.
+                <br />
+                The rail enforces it.
+              </h2>
+              <p className="mt-5 text-lg text-muted">
+                Every spend cap, allowlist, approval flow, and category filter
+                lives in version-controlled YAML — reviewed in pull requests,
+                deployed atomically, enforced on every payment. Audit log on
+                Arc is automatic; no SDK code change for new rules.
+              </p>
+              <div className="mt-7 grid grid-cols-2 gap-3 max-w-md">
+                <div className="rounded-lg border border-line bg-white p-4 shadow-sm">
+                  <div className="font-display text-2xl font-bold text-accent-blue">
+                    5
+                  </div>
+                  <div className="mt-1 text-[12px] text-muted">
+                    deterministic policy primitives
+                  </div>
+                </div>
+                <div className="rounded-lg border border-line bg-white p-4 shadow-sm">
+                  <div className="font-display text-2xl font-bold text-accent-green">
+                    &lt;5ms
+                  </div>
+                  <div className="mt-1 text-[12px] text-muted">
+                    policy evaluation latency
+                  </div>
+                </div>
+                <div className="rounded-lg border border-line bg-white p-4 shadow-sm">
+                  <div className="font-display text-2xl font-bold text-accent-purple">
+                    git-native
+                  </div>
+                  <div className="mt-1 text-[12px] text-muted">
+                    versioned, reviewable, rollbackable
+                  </div>
+                </div>
+                <div className="rounded-lg border border-line bg-white p-4 shadow-sm">
+                  <div className="font-display text-2xl font-bold text-accent-yellow">
+                    on-chain
+                  </div>
+                  <div className="mt-1 text-[12px] text-muted">
+                    every decision logged to Arc
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ================= ECONOMICS ================= */}
       <section className="relative overflow-hidden border-y border-line/60 py-24">
         <div
@@ -439,7 +593,7 @@ export default function LandingPage() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <a
-                  href="https://github.com/agentguard/agentguard"
+                  href="https://github.com/vikramRooT/agentguard"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 font-medium text-white backdrop-blur transition hover:bg-white/15"

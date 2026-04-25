@@ -24,7 +24,7 @@ const nav = [
 const external = [
   { href: "https://testnet.arcscan.app", label: "Arc Explorer" },
   {
-    href: "https://github.com/agentguard/agentguard",
+    href: "https://github.com/vikramRooT/agentguard",
     label: "GitHub",
     icon: Code2,
   },

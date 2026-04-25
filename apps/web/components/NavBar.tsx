@@ -57,7 +57,7 @@ export function NavBar() {
             arc testnet
           </div>
           <a
-            href="https://github.com/agentguard/agentguard"
+            href="https://github.com/vikramRooT/agentguard"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1.5 rounded-md border border-line bg-bg-soft px-2.5 py-1 text-[12px] text-muted transition hover:border-accent-blue/50 hover:text-primary"
