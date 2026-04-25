@@ -13,6 +13,12 @@ export async function fetchIncidents(limit = 50): Promise<IncidentListResponse> 
   return res.json();
 }
 
+export async function fetchAgents(): Promise<AgentListResponse> {
+  const res = await fetch(`${API_BASE}/v1/agents`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`agents fetch ${res.status}`);
+  return res.json();
+}
+
 export async function pauseAgent(agentId: string, authorizedBy: string, reason?: string) {
   const res = await fetch(`${API_BASE}/v1/kill-switch/${encodeURIComponent(agentId)}/pause`, {
     method: "POST",
@@ -93,6 +99,13 @@ export interface OverviewResponse {
     volume_usdc: number;
   };
   per_agent: Array<{ agent_id: string; count: number; volume_usdc: number }>;
+  protocol?: {
+    fee_per_check_usdc: number;
+    revenue_last_hour_usdc: number;
+    revenue_lifetime_usdc: number;
+    lifetime_checks: number;
+    treasury_address: string;
+  };
   recent_payments: PaymentRow[];
 }
 
@@ -115,6 +128,18 @@ export interface IncidentRow {
 
 export interface IncidentListResponse {
   incidents: IncidentRow[];
+}
+
+export interface AgentSummary {
+  agent_id: string;
+  paused: boolean;
+  circle_wallet_id: string | null;
+  owner_wallet_id: string | null;
+  erc8004_identity: string | null;
+}
+
+export interface AgentListResponse {
+  agents: AgentSummary[];
 }
 
 export type DashboardEvent =

@@ -1,8 +1,29 @@
 import { Router } from "express";
 import { z } from "zod";
+import { isDbReady, pool } from "../db/client.js";
 import { getAgent, upsertAgent } from "../db/repo.js";
 
 export const agentsRouter = Router();
+
+agentsRouter.get("/v1/agents", async (_req, res) => {
+  if (!isDbReady()) return res.json({ agents: [] });
+  try {
+    const { rows } = await pool.query<{
+      agent_id: string;
+      paused: boolean;
+      circle_wallet_id: string | null;
+      owner_wallet_id: string | null;
+      erc8004_identity: string | null;
+    }>(
+      `SELECT agent_id, paused, circle_wallet_id, owner_wallet_id, erc8004_identity
+         FROM agents
+         ORDER BY agent_id`,
+    );
+    return res.json({ agents: rows });
+  } catch (err) {
+    return res.status(500).json({ error: "db_error", detail: (err as Error).message });
+  }
+});
 
 const RegisterSchema = z.object({
   policy: z.record(z.unknown()).optional(),

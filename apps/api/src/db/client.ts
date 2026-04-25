@@ -2,7 +2,13 @@ import pg from "pg";
 import { config } from "../config.js";
 import { logger } from "../logger.js";
 
-const { Pool } = pg;
+const { Pool, types } = pg;
+
+// node-pg returns NUMERIC as a string to preserve precision. We don't need
+// 38-digit precision for USDC amounts or latency_ms, and the dashboard relies
+// on real numbers (e.g. .toFixed()), so cast NUMERIC to float globally.
+// Type OID 1700 = NUMERIC.
+types.setTypeParser(1700, (v) => (v === null ? null : parseFloat(v)));
 
 export const pool = new Pool({
   connectionString: config.db.url,

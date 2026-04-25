@@ -69,7 +69,9 @@ const AGENTS: AgentSpec[] = [
       spending_limits: { per_transaction: 0.1, per_day: 10 },
       recipient_policy: {
         type: "allowlist",
-        approved_recipients: ["twilio-vendor"],
+        // data-vendor-agent-v1 stands in for "twilio API" in the demo so
+        // sms-agent has a real allowlisted recipient and shows up active.
+        approved_recipients: ["twilio-vendor", "data-vendor-agent-v1"],
         fallback_action: "block",
       },
       kill_switch: { enabled: true, authorized_pausers: ["0xOperator"] },

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { config } from "../config.js";
 import { isDbReady, pool } from "../db/client.js";
 import { memStore } from "../db/memstore.js";
 
@@ -9,7 +10,7 @@ metricsRouter.get("/v1/metrics/overview", async (_req, res) => {
     return res.json(buildOverviewFromMemory());
   }
   try {
-    const [totals, perAgent, recent] = await Promise.all([
+    const [totals, perAgent, recent, lifetime] = await Promise.all([
       pool.query<{
         total: string;
         approved: string;
@@ -48,13 +49,19 @@ metricsRouter.get("/v1/metrics/overview", async (_req, res) => {
           ORDER BY created_at DESC
           LIMIT 50`,
       ),
+      pool.query<{ total_checks: string }>(
+        `SELECT COUNT(*)::text AS total_checks FROM payments`,
+      ),
     ]);
 
     const t = totals.rows[0]!;
+    const fee = config.protocol.feePerCheckUsdc;
+    const checks1h = Number(t.total);
+    const lifetimeChecks = Number(lifetime.rows[0]!.total_checks);
     res.json({
       window: "1h",
       totals: {
-        total: Number(t.total),
+        total: checks1h,
         approved: Number(t.approved),
         blocked: Number(t.blocked),
         escalated: Number(t.escalated),
@@ -65,6 +72,13 @@ metricsRouter.get("/v1/metrics/overview", async (_req, res) => {
         count: Number(r.count),
         volume_usdc: Number(r.volume),
       })),
+      protocol: {
+        fee_per_check_usdc: fee,
+        revenue_last_hour_usdc: Number((checks1h * fee).toFixed(6)),
+        revenue_lifetime_usdc: Number((lifetimeChecks * fee).toFixed(6)),
+        lifetime_checks: lifetimeChecks,
+        treasury_address: config.protocol.treasuryWalletAddress,
+      },
       recent_payments: recent.rows,
     });
   } catch (err) {
@@ -79,6 +93,12 @@ metricsRouter.get("/v1/metrics/overview", async (_req, res) => {
 });
 
 metricsRouter.get("/v1/health", (_req, res) => {
+  res.json({ ok: true, version: "0.1.0", ts: new Date().toISOString() });
+});
+
+// Bare /health for ops tooling (Railway, Kubernetes probes, etc.) that
+// expect the unversioned convention.
+metricsRouter.get("/health", (_req, res) => {
   res.json({ ok: true, version: "0.1.0", ts: new Date().toISOString() });
 });
 

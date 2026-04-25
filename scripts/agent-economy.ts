@@ -54,6 +54,17 @@ const FLOWS: Flow[] = [
     task_prefix: "classify",
     delayMsRange: [4500, 5500],
   },
+  {
+    // sms-agent receives notifications from inference, then pays its own
+    // upstream provider (data-vendor stands in for "twilio API" so the
+    // recipient is on its allowlist).
+    from: "sms-agent-v1",
+    to: "data-vendor-agent-v1",
+    amountRange: [0.001, 0.003],
+    intent: "buy phone-number-validation lookup",
+    task_prefix: "sms",
+    delayMsRange: [6000, 8000],
+  },
 ];
 
 let running = true;

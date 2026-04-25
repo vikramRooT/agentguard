@@ -1,13 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ShieldAlert, ShieldCheck, Coins, Wallet } from "lucide-react";
 import {
-  ShieldAlert,
-  ShieldCheck,
-  Coins,
-  AlertTriangle,
-} from "lucide-react";
-import {
+  fetchAgents,
   fetchOverview,
   fetchIncidents,
   openEventStream,
@@ -23,12 +19,10 @@ import { BigStatCard } from "@/components/BigStatCard";
 import { ThroughputChart } from "@/components/ThroughputChart";
 import { AgentFeed } from "@/components/AgentFeed";
 import { IncidentCard } from "@/components/IncidentCard";
-import { KillSwitchButton } from "@/components/KillSwitchButton";
 import { PaymentDetailModal } from "@/components/PaymentDetailModal";
 import { AgentRoster } from "@/components/AgentRoster";
 
 const OPERATOR = process.env.NEXT_PUBLIC_OPERATOR_WALLET ?? "0xOperator";
-const PRIMARY_AGENT = "research-agent-v1";
 
 export default function DashboardPage() {
   const [overview, setOverview] = useState<OverviewResponse | null>(null);
@@ -36,18 +30,25 @@ export default function DashboardPage() {
   const [rows, setRows] = useState<PaymentRow[]>([]);
   const [flashIncidentId, setFlashIncidentId] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState<PaymentRow | null>(null);
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState<Record<string, boolean>>({});
   const startedRef = useRef<number>(Date.now());
 
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
       try {
-        const [ov, inc] = await Promise.all([fetchOverview(), fetchIncidents(50)]);
+        const [ov, inc, ag] = await Promise.all([
+          fetchOverview(),
+          fetchIncidents(50),
+          fetchAgents(),
+        ]);
         if (cancelled) return;
         setOverview(ov);
         setRows(ov.recent_payments);
         setIncidents(inc.incidents);
+        setPaused(
+          Object.fromEntries(ag.agents.map((a) => [a.agent_id, a.paused])),
+        );
       } catch {}
     };
     load();
@@ -88,7 +89,21 @@ export default function DashboardPage() {
           if (row.decision === "approved") e.volume_usdc += row.amount_usdc;
         } else
           pa.push({ agent_id: row.agent_id, count: 1, volume_usdc: row.amount_usdc });
-        return { ...prev, totals, per_agent: pa };
+        // Bump the protocol revenue locally so the card ticks per-tx
+        // instead of waiting for the 10s overview refresh.
+        const protocol = prev.protocol
+          ? {
+              ...prev.protocol,
+              lifetime_checks: prev.protocol.lifetime_checks + 1,
+              revenue_lifetime_usdc: Number(
+                (prev.protocol.revenue_lifetime_usdc + prev.protocol.fee_per_check_usdc).toFixed(6),
+              ),
+              revenue_last_hour_usdc: Number(
+                (prev.protocol.revenue_last_hour_usdc + prev.protocol.fee_per_check_usdc).toFixed(6),
+              ),
+            }
+          : prev.protocol;
+        return { ...prev, totals, per_agent: pa, protocol };
       });
     }
     if (ev.type === "incident.new") {
@@ -97,9 +112,15 @@ export default function DashboardPage() {
       setFlashIncidentId(inc.incident_id);
       setTimeout(() => setFlashIncidentId(null), 2000);
     }
-    if (ev.type === "agent.paused") setPaused(true);
-    if (ev.type === "agent.unpaused") setPaused(false);
+    if (ev.type === "agent.paused") {
+      setPaused((p) => ({ ...p, [ev.payload.agent_id]: true }));
+    }
+    if (ev.type === "agent.unpaused") {
+      setPaused((p) => ({ ...p, [ev.payload.agent_id]: false }));
+    }
   }
+
+  const pausedCount = Object.values(paused).filter(Boolean).length;
 
   const perMinute = useMemo(() => {
     if (!overview) return 0;
@@ -117,34 +138,26 @@ export default function DashboardPage() {
         <div className="mx-auto max-w-[1600px] px-6 py-6 lg:px-8">
           {/* ==== HERO BANNER ==== */}
           <HeroBanner
-            label={`${paused ? "Paused" : "Active"} · real-time`}
+            label={`${pausedCount > 0 ? `${pausedCount} agent${pausedCount === 1 ? "" : "s"} paused` : "Operating · real-time"}`}
             title="Operator governance console"
-            description="Every AI agent payment flows through five layers — kill switch, ERC-8004 identity, policy, anomaly, and Claude Haiku 4.5 intent — before settling on Arc. Full trace written on-chain."
+            description="Every AI agent payment flows through five layers — kill switch, ERC-8004 identity, policy, anomaly, and Claude Haiku 4.5 intent — before settling on Arc. Full trace written on-chain. Per-agent kill switch is in the roster on the right."
             right={
-              <div className="flex items-center gap-3">
-                <div
+              <div
+                className={
+                  "flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider backdrop-blur " +
+                  (pausedCount > 0
+                    ? "border-red-400/40 bg-red-500/10 text-red-200"
+                    : "border-emerald-400/30 bg-emerald-500/10 text-emerald-200")
+                }
+              >
+                <span
                   className={
-                    "flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider backdrop-blur " +
-                    (paused
-                      ? "border-red-400/40 bg-red-500/10 text-red-200"
-                      : "border-emerald-400/30 bg-emerald-500/10 text-emerald-200")
+                    pausedCount > 0
+                      ? "h-1.5 w-1.5 rounded-full bg-red-400"
+                      : "h-1.5 w-1.5 rounded-full bg-emerald-400"
                   }
-                >
-                  <span
-                    className={
-                      paused
-                        ? "h-1.5 w-1.5 rounded-full bg-red-400"
-                        : "h-1.5 w-1.5 rounded-full bg-emerald-400"
-                    }
-                  />
-                  {paused ? "paused" : "active"}
-                </div>
-                <KillSwitchButton
-                  agentId={PRIMARY_AGENT}
-                  paused={paused}
-                  operatorWallet={OPERATOR}
-                  onChange={setPaused}
                 />
+                {pausedCount > 0 ? `${pausedCount} paused` : "all sending agents up"}
               </div>
             }
           />
@@ -174,11 +187,13 @@ export default function DashboardPage() {
               delta={`${blockedRate}%`}
             />
             <BigStatCard
-              label="Escalated to human"
-              value={t?.escalated ?? 0}
-              tone="yellow"
-              icon={AlertTriangle}
-              suffix="pending"
+              label="Protocol revenue"
+              value={overview?.protocol?.revenue_lifetime_usdc ?? 0}
+              format={(n) => n.toFixed(4)}
+              tone="purple"
+              icon={Wallet}
+              suffix="USDC"
+              delta={`@ $${overview?.protocol?.fee_per_check_usdc ?? 0}/check`}
             />
           </section>
 
@@ -191,7 +206,14 @@ export default function DashboardPage() {
           {/* ==== CHART + ROSTER ==== */}
           <section className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
             <ThroughputChart count={t?.total ?? 0} />
-            <AgentRoster stats={overview?.per_agent ?? []} />
+            <AgentRoster
+              stats={overview?.per_agent ?? []}
+              paused={paused}
+              operatorWallet={OPERATOR}
+              onPausedChange={(agentId, p) =>
+                setPaused((prev) => ({ ...prev, [agentId]: p }))
+              }
+            />
           </section>
 
           {/* ==== SECTION DIVIDER ==== */}
