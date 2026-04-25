@@ -12,7 +12,6 @@ import {
   Zap,
   ShieldAlert,
   BookOpen,
-  Repeat,
   TrendingDown,
   UserPlus,
   Terminal,
@@ -26,7 +25,6 @@ type Scenario =
   | "legitimate"
   | "a2a-attack"
   | "gradual-drain"
-  | "double-payment"
   | "new-recipient";
 
 interface Demo {
@@ -75,17 +73,6 @@ const DEMOS: Demo[] = [
     iconColor: "text-accent-yellow",
     iconBg: "bg-accent-yellow/10",
     iconBorder: "border-accent-yellow/30",
-  },
-  {
-    id: "double-payment",
-    title: "Duplicate task replay",
-    description:
-      "Same task ID, fired twice in seconds. First settles; second is recognised as a replay.",
-    scenario: "double-payment",
-    icon: Repeat,
-    iconColor: "text-accent-purple",
-    iconBg: "bg-accent-purple/10",
-    iconBorder: "border-accent-purple/30",
   },
   {
     id: "new-recipient",
@@ -211,36 +198,6 @@ export default function DemoPage() {
               reason: r.reason,
             });
           }
-          break;
-        }
-
-        case "double-payment": {
-          // Same task ID twice in quick succession. The anomaly /
-          // duplicate detection should flag the replay.
-          const taskId = `dup-${Date.now()}`;
-          const payload = {
-            agent_id: "research-agent-v1",
-            to_agent_id: "data-vendor-agent-v1",
-            amount_usdc: 0.001,
-            intent: "Pay invoice INV-2026-44812",
-            original_task_id: taskId,
-            context: {
-              triggered_by: "demo-page",
-              scenario: demo.scenario,
-            },
-          };
-          const r1 = await fire(payload);
-          appendLog({
-            kind: r1.decision,
-            text: `${r1.decision.toUpperCase()} — first payment`,
-            reason: r1.reason,
-          });
-          const r2 = await fire(payload);
-          appendLog({
-            kind: r2.decision,
-            text: `${r2.decision.toUpperCase()} — replay attempt`,
-            reason: r2.reason,
-          });
           break;
         }
 
